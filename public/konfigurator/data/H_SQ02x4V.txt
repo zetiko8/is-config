@@ -1,0 +1,1168 @@
+{
+	"id": "H_SQ02x4V",
+	"name": {
+		"sl": "humcl ane",
+		"en": "humcl ane",
+		"de": "humcl ane"
+	},
+	"description": {
+		"sl": "Bla bla",
+		"en": "Bla bla",
+		"de": "Bla bla"
+	},
+	"properties": [{
+		"id": "TYPE",
+		"name": {
+			"sl": "Tipska oznaka",
+			"en": "Model Name",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "SQ0104",
+			"name": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "SQ0114",
+			"name": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "SQ0204",
+			"name": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "SQ0214",
+			"name": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}]
+	}, {
+		"id": "CONNECT",
+		"name": {
+			"sl": "Vezava",
+			"en": "Connection",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "L",
+			"name": {
+				"sl": "Medfazno (L-L)",
+				"en": "Phase to Phase (L-L)",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "N",
+			"name": {
+				"sl": "Fazno (L-N)",
+				"en": "Phase to Neutral (L-N)",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}]
+	}, {
+		"id": "UNOM",
+		"name": {
+			"sl": "Nazivna napetost",
+			"en": "Nominal Voltage",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "024V",
+			"name": {
+				"sl": "24 V",
+				"en": "24 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "57V7",
+			"name": {
+				"sl": "57,7 V",
+				"en": "57,7 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "63V5",
+			"name": {
+				"sl": "63,5 V",
+				"en": "63,5 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "69V3",
+			"name": {
+				"sl": "69,3 V",
+				"en": "69,3 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "83V3",
+			"name": {
+				"sl": "83,3 V",
+				"en": "83,3 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "100V",
+			"name": {
+				"sl": "100 V",
+				"en": "100 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "110V",
+			"name": {
+				"sl": "110 V",
+				"en": "110 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "115V",
+			"name": {
+				"sl": "115 V",
+				"en": "115 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "120V",
+			"name": {
+				"sl": "120 V",
+				"en": "120 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "220V",
+			"name": {
+				"sl": "220 V",
+				"en": "220 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "230V",
+			"name": {
+				"sl": "230 V",
+				"en": "230 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "380V",
+			"name": {
+				"sl": "380 V",
+				"en": "380 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "400V",
+			"name": {
+				"sl": "400 V",
+				"en": "400 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "415V",
+			"name": {
+				"sl": "415 V",
+				"en": "415 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "440V",
+			"name": {
+				"sl": "440 V",
+				"en": "440 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "480V",
+			"name": {
+				"sl": "480 V",
+				"en": "480 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "500V",
+			"name": {
+				"sl": "500 V",
+				"en": "500 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "690V",
+			"name": {
+				"sl": "690 V",
+				"en": "690 V",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}]
+	}, {
+		"id": "FREQRANG",
+		"name": {
+			"sl": "Frekvenčno območje",
+			"en": "Frequency Range",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "S",
+			"name": {
+				"sl": "40...70 Hz *",
+				"en": "40...70 Hz *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}],
+		"defaultOption": "S"
+	}, {
+		"id": "SYNCOUT",
+		"name": {
+			"sl": "Sinh. relejski izhod",
+			"en": "Sync. Relay Output",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "R0",
+			"name": {
+				"sl": "Brez",
+				"en": "Without",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "RC",
+			"name": {
+				"sl": "Stalni pulz",
+				"en": "Continual Impulse",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "R3",
+			"name": {
+				"sl": "Pulz 300 ms - fiksni *",
+				"en": "Impulse 300 ms - Fixed *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}, {
+			"code": "1",
+			"name": {
+				"sl": "Pulz 100 ms",
+				"en": "Impulse 100 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "2",
+			"name": {
+				"sl": "Pulz 200 ms",
+				"en": "Impulse 200 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "3",
+			"name": {
+				"sl": "Pulz 300 ms",
+				"en": "Impulse 300 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "4",
+			"name": {
+				"sl": "Pulz 400 ms",
+				"en": "Impulse 400 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "5",
+			"name": {
+				"sl": "Pulz 500 ms",
+				"en": "Impulse 500 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "6",
+			"name": {
+				"sl": "Pulz 600 ms",
+				"en": "Impulse 600 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "7",
+			"name": {
+				"sl": "Pulz 700 ms",
+				"en": "Impulse 700 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "8",
+			"name": {
+				"sl": "Pulz 800 ms",
+				"en": "Impulse 800 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "9",
+			"name": {
+				"sl": "Pulz 900 ms",
+				"en": "Impulse 900 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "10",
+			"name": {
+				"sl": "Pulz 1000 ms",
+				"en": "Impulse 1000 ms",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}],
+		"defaultOption": "R3"
+	}, {
+		"id": "STATOUT",
+		"name": {
+			"sl": "Statusni izhod",
+			"en": "Status Output",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "N",
+			"name": {
+				"sl": "Ne *",
+				"en": "No *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}, {
+			"code": "S",
+			"name": {
+				"sl": "Da",
+				"en": "Yes",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}],
+		"defaultOption": "N"
+	}, {
+		"id": "DEADBUS",
+		"name": {
+			"sl": "Dead busbar funkcija",
+			"en": "Dead Busbar Function",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "N",
+			"name": {
+				"sl": "Brez *",
+				"en": "None *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}, {
+			"code": "1",
+			"name": {
+				"sl": "DB 10% Un",
+				"en": "DB 10% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "2",
+			"name": {
+				"sl": "DB 20% Un",
+				"en": "DB 20% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "3",
+			"name": {
+				"sl": "DB 30% Un",
+				"en": "DB 30% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "4",
+			"name": {
+				"sl": "DB 40% Un",
+				"en": "DB 40% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "5",
+			"name": {
+				"sl": "DG+DB 10% Un",
+				"en": "DG+DB 10% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "6",
+			"name": {
+				"sl": "DG+DB 20% Un",
+				"en": "DG+DB 20% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "7",
+			"name": {
+				"sl": "DG+DB 30% Un",
+				"en": "DG+DB 30% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "8",
+			"name": {
+				"sl": "DG+DB 40% Un",
+				"en": "DG+DB 40% Un",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}],
+		"defaultOption": "N"
+	}, {
+		"id": "DELTAPHI",
+		"name": {
+			"sl": "Nastavitev delta fi",
+			"en": "Delta phi Setting",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "S",
+			"name": {
+				"sl": "+/- 2...20 el. *",
+				"en": "+/- 2...20 el. *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "V",
+			"name": {
+				"sl": "+ 2...20 el.",
+				"en": "+ 2...20 el.",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "U",
+			"name": {
+				"sl": "- 2...20 el.",
+				"en": "- 2...20 el.",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": {
+				"stmnt": ["(", {
+					"property": ["SYNCOUT"],
+					"options": ["R0"],
+					"comparator": "equals"
+				}, ")"]
+			}
+		}, {
+			"code": "N",
+			"name": {
+				"sl": "Brez",
+				"en": "None",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}],
+		"defaultOption": "S"
+	}, {
+		"id": "FINISH",
+		"name": {
+			"sl": "Izvedba",
+			"en": "Finish",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "A",
+			"name": {
+				"sl": "Standardna *",
+				"en": "Standard *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}, {
+			"code": "H",
+			"name": {
+				"sl": "HVE (Tropska)",
+				"en": "HVE (Tropical Seal)",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "S",
+			"name": {
+				"sl": "Ladijska",
+				"en": "Ship Ver.",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "P",
+			"name": {
+				"sl": "IP54",
+				"en": "IP54",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "G",
+			"name": {
+				"sl": "HVE + IP54",
+				"en": "HVE + IP54",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "R",
+			"name": {
+				"sl": "Ladijska+ IP54",
+				"en": "Ship Ver. + IP54",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "T",
+			"name": {
+				"sl": "Ladijska + HVE",
+				"en": "Ship Ver. + HVE",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}],
+		"defaultOption": "A"
+	}, {
+		"id": "FPANEL",
+		"name": {
+			"sl": "Čelna folija",
+			"en": "Front panel",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "S",
+			"name": {
+				"sl": "BUS BAR / GENERATOR *",
+				"en": "BUS BAR / GENERATOR *",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "TRUE",
+			"constraints": ""
+		}, {
+			"code": "U",
+			"name": {
+				"sl": "VOLTAGE 1 / VOLTAGE 2",
+				"en": "VOLTAGE 1 / VOLTAGE 2",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "A",
+			"name": {
+				"sl": "BUS BAR / IN/OUT",
+				"en": "BUS BAR / IN/OUT",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "B",
+			"name": {
+				"sl": "BUS BAR / TRANSFORMER",
+				"en": "BUS BAR / TRANSFORMER",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "C",
+			"name": {
+				"sl": "prazno / BUS BAR",
+				"en": "empty / BUS BAR",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}, {
+			"code": "D",
+			"name": {
+				"sl": "BUS BAR / GEN FRANCOSKA",
+				"en": "BUS BAR / GEN FRANCH",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}],
+		"defaultOption": "S"
+	}, {
+		"id": "UPR",
+		"name": {
+			"sl": "Prikaz napetosti (LCD)",
+			"en": "Voltage display (LCD)",
+			"de": ""
+		},
+		"notes": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		},
+		"options": [{
+			"code": "string(5)",
+			"name": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"notes": {
+				"sl": "",
+				"en": "",
+				"de": ""
+			},
+			"default": "",
+			"constraints": ""
+		}]
+	}]
+}

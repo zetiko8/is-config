@@ -1,0 +1,828 @@
+Source: configuratorMain.js
+/**
+ * @typedef {Object} ProductGroup - opisuje produktno skupino
+ * @property {string} id
+ * @property {string} name - naziv, ki ga vidi uporabnik
+ * @property {string} description - opis, ki ga vidi uporabnik 
+ * @property {array.<ProtoProduct>} products - sklad znacilnosti produkta
+ * @property {boolean} active - oznacuje ali je ps izbrana 
+ */
+
+/**
+ * @typedef {Object} ProtoProduct - podatki o produktu, ki jih nosi produktna skupina
+ * @property {string} id - ta id je enak ustreznemu id v produktu @see Product
+ * @property {string} name - naziv, ki ga vidi uporabnik
+ * @property {string} description - opis, ki ga vidi uporabnik
+ * @property {boolean} active - oznacuje ali je produkt izbran
+ * @property {boolean} collapsed - je true, ce je izbran nek drug produkt 
+ */
+
+/**
+ * @typedef {Object} Product - opisuje produkt
+ * @property {string} id 
+ * @property {array.<Property>} properties - sklad znacilnosti produkta
+ * @property {boolean} changed - oznacuje ali so bile znacilnosti spremenjene 
+ */
+
+/**
+ * @typedef {Object} Property - opisuje znacilnost
+ * @property {string} id 
+ * @property {string} name - naziv, ki ga vidi uporabnik
+ * @property {string} notes - opombe, ki se pojavijo na mouse:hover
+ * @property {array.<Option>} options - sklad znacilnosti produkta
+ * @property {Object} error 
+ * @property {boolean} error.toLong - je true, ce je znacilnost customString in je uporabnikov vnos predolg
+ * @property {boolean} error.notSelected - je true, ce pri znacilnosti ni izbrana opcija
+ * @property {string} value - oznacuje izbrano opcijo in je isti kodi v Opciji @see Option 
+ */
+
+/**
+ * @typedef {Object} Option - opisuje opcijo
+ * @property {string} code - del narocniske kode, ki jo izbira te opcije prispeva k narocniskiKodi 
+ * @property {string} name - naziv, ki ga vidi uporabnik
+ * @property {string} notes - opombe, ki se pojavijo na mouse:hover
+ * @property {Object} constraints - omejitve, na podlagi katerih je opcija onemogočena
+ * @property {boolean} disabled - pove, ce je izbira onemogocena
+ * @property {string} default - "TRUE"/"" pove ce je opcija privzeta
+ */
+
+/**
+ * @typedef {Object} Truth - opisuje izbire pri dolocenih Znacilnostih. Pomeni, ta.propery vrednost = ta.opcija
+ * @property {string} property - nosi id znacilnosti @see Property.id
+ * @property {string} option - nosi del narocniske kode opcije @see Option.code
+ */
+
+/** 
+ * pollyfill za IE
+ */
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function (searchString, position) {
+        position = position || 0;
+        return this.indexOf(searchString, position) === position;
+    };
+}
+
+/**
+ * @namespace
+ * @property {string} language - jezik pridobljen iz <html lang>
+ * @property {string} url - naslov te strani pridobljen iz .title elementa
+ * @property {string} defaultLanguage - 'sl' 
+ */
+var context = {
+    // this.url = 'Measuring transducers MT 4xx';
+    url: "buzzWord",
+    language: 'en',
+    defaultLanguage: 'sl',
+}
+
+
+/**
+ * Data manager - nalaga podatke o Produktih, ter hrani, vraca in brise podatke o uporabnikovih izbirah
+ * @namespace
+ */
+var dm = (/** @lends dm */ function (context) {
+
+    /**
+     * @type {Object} 
+     * @memberof dm
+     *
+     * @description
+     * {@link context}
+     */
+    var context = context;
+
+    /**
+     * @type {array.<Product>}
+     * @memberof dm
+     * 
+     * @description
+     * Sklad shranjenih Produktov, ki so bili spremenjeni
+     */
+    var storedProducts = [];
+
+    /**
+     * Nalozi podatke in jim doda lastnosti potrbne za izvajanje UI logike
+     * @memberof dm
+     * @method
+     * @public
+     * @param {string} url 
+     * @param {string} target - produkt/produktneSkupine/internetneSkupine
+     *      - pove loadData kaj se nalga in kako naj se obdela
+     * @param {function} callback - shrani nalozeno v svoj Vue 
+     */
+    var loadData = function (url, target, callback) {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function (data) {
+                loadSuccess(JSON.parse(data), target, callback);
+            },
+            error: function () {
+                callback();
+            }
+        });
+    }
+
+    /**
+     * Shrani dani produkt
+     * @memberof dm
+     * @method
+     * @public
+     * @param {Product} product 
+     */
+    var storeProduct = function (product) {
+        var alreadyStored = false;
+        for (let i = 0; i < storedProducts.length; i++) {
+            if (product.id === storedProducts[i].id) {
+                storedProducts[i] = product; alreadyStored = true;
+            }
+        }
+        if (!alreadyStored) { storedProducts.push(product); }
+    }
+
+    /**
+     * Vrne iskani produkt
+     * @memberof dm
+     * @method
+     * @public
+     * @param {Product.id} id 
+     */
+    var getStoredProduct = function (id) {
+        for (let i = 0; i < storedProducts.length; i++) {
+            if (id === storedProducts[i].id) {
+                return storedProducts[i];
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Izbrise iskani produkt
+     * @memberof dm
+     * @method
+     * @public
+     * @param {Product.id} id  
+     */
+    var deleteStoredProduct = function (id) {
+        for (let i = 0; i < storedProducts.length; i++) {
+            if (id === storedProducts[i].id) {
+                storedProducts.splice(i, 1);
+            }
+        }
+    }
+
+    /**
+     * Se izvrsi, ce je data uspesno nalozen v {@link dm.loadData}
+     * @memberof dm
+     * @function
+     * @private
+     * @param {Object} data 
+     * @param {String} target 
+     * @param {Function} callback 
+     * @returns {Product|ProductGroup} predelane nalozene podatke
+     */
+    function loadSuccess(data, target, callback) {
+
+        // Ce so nalozene produktne skupine 
+        if (target === 'productGroups') {
+            data = addProppertiesToProductGroups(data); // doda lastnosti
+
+            if (context.url !== 'buzzWord') {   // ce je kontekst ni stran z vsemi produkti
+                var unfilteredData = data;
+                loadData('data/internetGroups.txt', 'internetGroups', function (internetGroups) { // nalozi internetneSkupine
+                    var internetGroup = {};
+                    var filteredPgs = [];
+
+                    // pogleda na strani katere internetneSkupine je
+                    for (let i = 0; i < internetGroups.length; i++) {
+                        if (internetGroups[i].id[context.language] === context.url) {
+                            internetGroup = internetGroups[i];
+                        }
+                    }
+
+                    // filtrira zgolj produkte, ki so v tej internetniSkupini
+                    for (let i = 0; i < internetGroup.productGroups.length; i++) {
+                        for (let pgs = 0; pgs < unfilteredData.length; pgs++) {
+                            if (unfilteredData[pgs].id === internetGroup.productGroups[i]) {
+                                filteredPgs.push(unfilteredData[pgs]);
+                            }
+                        }
+                    }
+                    callback(filteredPgs);  // shrani filtrirani data v pgs Vue
+                });
+            } else {    // ce kontekst je stran z vsemi produkti
+                callback(data); // shrani ves data v pgs
+            }
+        }
+
+        // Glej zgornjo
+        if (target === 'internetGroups') {
+            callback(data);
+        }
+
+        // Ce je nalozen produkt
+        if (target === "product") {
+            callback(addPropertiesToProduct(data)); // doda lastnosti in shrani v pr Vue
+        }
+
+        /**
+         * Doda lastnosti podatkom o produktnih Skupinah
+         * @function
+         * @memberof loadSuccess
+         * @private
+         * @param {Object} productGroups - ps kakor so nalozene
+         * @returns {array.<ProductGroup>} 
+         */
+        function addProppertiesToProductGroups(productGroups) {
+            for (let i = 0; i < productGroups.length; i++) {
+                productGroups[i].active = false;
+                for (let ii = 0; ii < productGroups[i].products.length; ii++) {
+                    productGroups[i].products[ii].active = false;
+                    productGroups[i].products[ii].collapsed = false;
+                }
+            }
+            return productGroups;
+        }
+
+        /**
+         * Doda lastnosti podatkom o produktnih Skupinah
+         * @function
+         * @memberof loadSuccess
+         * @private
+         * @param {Object} product - p kakor je nalozen
+         * @returns {Product} 
+         */
+        function addPropertiesToProduct(product) {
+            product.changed = false;
+            for (let i = 0; i < product.properties.length; i++) {
+                product.properties[i].error = {};
+                product.properties[i].error.toLong = false;
+                product.properties[i].error.notSelected = false;
+                product.properties[i].value = '';
+
+                for (let o = 0; o < product.properties[i].options.length; o++) {
+                    product.properties[i].options[o].disabled = false;
+                }
+            }
+            return product;
+        }
+    }
+    return {
+        loadData: loadData,
+        storeProduct: storeProduct,
+        getStoredProduct: getStoredProduct,
+        deleteStoredProduct: deleteStoredProduct
+    }
+}(context));
+
+/**
+ * Za obravnavanje omejitev pri opcijah {@link Option}
+ * @property {function} getTruth - dobi array resnic {@link Truth} in za dano omejitev vrne true/false
+ */
+var lm = new logicModule();
+
+
+var label = {
+    titlePgs: { en: "Product Groups" },
+    canNotLoad: { en: "Cannot load data" },
+    titlePg: { en: "Products" },
+    backLabel: { en: "Back" },
+    canNotLoadProduct: { en: "Can not load product" },
+    sendRequest: { en: "Send request for configured product" },
+    orderCode: { en: "Order code: " },
+    notSelectedError: { en: "Field is required" },
+    toLongError: { en: "Your input is to long. It can contain max letters:" },
+    reload: { en: "Undo changes" },
+}
+
+/**
+ * Vue za produktne skupine
+ * @module pgs
+ */
+var pgs = new Vue({
+
+    /** Htmtl element, ki ga Vue kontrolira */
+    el: '#productGroupsDiv',
+
+    data: {
+
+        /** @type {array.<ProductGroup>} */
+        productGroups: [],
+
+        /** ce se pgs data ne more naloziti renderira sporocilo z napako */
+        errors: [],
+
+        /** naslov za pgs <table> */
+        titlePgs: label.titlePgs[context.language],
+
+        /** za prevajanje stringov {@link context} */
+        context: context,
+
+        /** kontrolira vidnost pgs <table> */
+        active: false,
+    },
+    methods: {
+
+        /**
+         * Shrani naloadane podatke in prikaze pgs <table>
+         * 
+         * @memberof pgs
+         * @method
+         * @param {ProductGroup} loaded
+         */
+        setData: function (loaded) {
+            this.productGroups = loaded;
+            this.active = true;
+
+            // ce je naloadan data null renderira napako
+            if (this.productGroups === undefined || this.productGroups.length === 0) {
+                this.errors.push(label.canNotLoad[context.language]);
+            }
+
+            // ce je v data tgolj ena produktnaSkupina, preskoci pgs
+            // nivo izbire in zacne izbiranje na pg nivoju
+            if (this.productGroups.length === 1) {
+                this.active = false;
+                this.pgButton(this.productGroups[0]);
+            }
+        },
+
+        /**
+         * Preda data o izbrani produktnoSkupino pg Vue in prikaze pg <table>:
+         * - izbrise vse podatke pg in pr Vue,
+         * - preveri ce data obstaja, sicer sprozi napako,
+         * - preda data in aktivira pg Vue,
+         * 
+         * @memberof pgs
+         * @method 
+         * @param {ProductGroup} data
+         */
+        invokeChild: function (data) {
+
+            // skrije in zbrise podatke o pg in pr
+            pg.activate(false); pg.clearData();
+            pr.activate(false); pr.clearData();
+
+            if (data === undefined) { this.errors.push() }  // ce je data null renderira error
+            else {  // sicer animira izbran gumb kot selected 
+                this.animate(data);
+                pg.setData(data); pg.activate(true);    // in aktivira pg
+            }
+        },
+
+        /**
+         * EventListener za pgbutton.
+         * @memberof pgs
+         * @method
+         * @param {ProductGroup} productGroup 
+         */
+        pgButton: function (productGroup) {
+            this.invokeChild(productGroup);
+        },
+
+        /**
+         * Nastavi atribut active izbrani produktni skupini.
+         * S tem se postane pritisnjeni gumb moder.
+         * @memberof pgs
+         * @method 
+         */
+        animate: function (productGroup) {
+
+            for (let i = 0; i < this.productGroups.length; i++) {
+                this.productGroups[i].active = false;
+            }
+            productGroup.active = true;
+        }
+    },
+
+    /** prvi korak Ui nalozi podatke o produktnih skupinah in labels */
+    beforeMount: function () {
+        dm.loadData('data/productGroups.txt', 'productGroups', this.setData);
+    }
+});
+
+/**
+ * Vue za produkte produktne skupine.
+ * @module 
+ */
+var pg = new Vue({
+
+    /** Html element, ki ga Vue kontrolira. */
+    el: '#productGroupDiv',
+
+    data: {
+
+        /** @type {Product} */
+        products: [],
+
+        /** Ce ni mogoce naloziti izbrnega produkta se renderira error sporocilo. */
+        errors: [],
+
+        /** Naslov pg <table> */
+        titlePg: label.titlePg[context.language],
+
+        /** Label za gumb za nazaj */
+        backLabel: label.backLabel[context.language],
+
+        /** {@link context} */
+        context: context,
+
+        /** Kotnrolira vidnost pg <table> */
+        active: false,
+
+        /** Ce je eden od produktov izbran, se odpre pr <table> in
+         *  ostali produkti se skrijejo
+         */
+        collapsed: false,
+    },
+    methods: {
+
+        /** 
+         * Shrani podatke, ki jih dobi od pgs Vue
+         * @memberof pg
+         * @method
+         * @param {productGroup} productGroup
+         */
+        setData: function (productGroup) {
+            this.products = productGroup.products;
+        },
+
+        /** 
+         * Prikaze/Skrije <table>
+         * @memberof pg
+         * @method
+         * @param {boolean} bool  
+         */
+        activate: function (bool) {
+            this.active = bool; this.collapsed = false;
+        },
+        /**
+         * Izbrise podatke
+         * @memberof pg
+         * @method
+         */
+
+        clearData: function () {
+            for (let i = 0; i < this.products.length; i++) {
+                this.products[i].active = false; this.products[i].collapsed = false;
+            }
+            this.collapsed = false; this.products = {}; this.errors = [];
+        },
+
+        /**
+         * Glede na id izbranega produkta nalozi podatke o tem produktu in jih posreduje pr Vue
+         * 
+         * @memberof pg
+         * @method
+         * @param {string} id - {@link ProtoProduct.id }
+         */
+        invokeChild: function (id) {
+
+            this.errors = []; // pobrise poprejsnje napake z nalaganjem
+            pr.activate(false); pr.clearData(); // skrije pr<table> in izbrise njegove podatke
+
+            var storedPr = dm.getStoredProduct(id); // pogleda, ce dataManager ze vsebuje ta produkt
+            if (storedPr) {
+                pr.setData(storedPr, "stored"); pr.activate(true);  // ce ga vsebuje, ga poda prVue in prikaze pr<table>
+            } else {
+                dm.loadData('data/' + id + '.txt', 'product', function (loaded) {   // ce podatkov se n jih nalozi
+                    if (loaded === undefined) { // ce jih ne more naloziti prikaze error sporocilo
+                        pg.errors.push(label.canNotLoadProduct[context.language]);
+                    } else {    // ko jih nalozi, jih poda prVue in prikaze pr<table>
+                        pr.setData(loaded, "loaded"); pr.activate(true);
+                    }
+                });
+            }
+        },
+
+        /** 
+         * ActionListener za pButton
+         * @memberof pg
+         * @method
+         * @param {ProtoProduct} product
+         */
+        pButton: function (product) {
+            this.animate(product);  // prikaze pritisnjen gumb kot selected
+            this.collapsed = true;  // skrije neizbrane gumbe
+            this.collapse();        // 
+            this.invokeChild(product.id);   // invokeChild 
+        },
+
+        /** 
+         * Prokaze pritisnjen gumb kot moder.
+         * @memberof pg
+         * @method
+         * @param {ProtoProduct} product
+         */
+        animate: function (product) {
+            for (let i = 0; i < this.products.length; i++) {
+                this.products[i].active = false;
+            }
+            product.active = true;
+        },
+
+        /**
+         * Nastavi collapsed atrribut ProtoProdukta, ki skupaj z lastnostjo Vue collapsed pove, ali naj
+         * bo <tr> tega produkta skrita ali ne.
+         * @memberof pg
+         * @method
+         */
+        collapse: function () {
+            for (let i = 0; i < this.products.length; i++) {
+                if (this.collapsed) { if (!this.products[i].active) this.products[i].collapsed = true }
+                else { this.products[i].collapsed = false; }
+            }
+        },
+
+        /**
+         * ActionListener za bckButton.
+         * Ob pritisku na ta gumb se deaktivira prVue in se pozornost vrne na ta (pg) nivo
+         * @memberof pg
+         * @method
+         */
+        backButton: function () {
+            pr.activate(false); pr.clearData();
+            this.collapsed = false; this.collapse();
+        }
+    },
+});
+
+/**
+ * Vue za izbiro znacilnosti produkta.
+ * @module 
+ */
+var pr = new Vue({
+
+    /** Html element, ki ga Vue kontrolira. */
+    el: '#productDiv',
+
+    data: {
+
+        /** @type {array.<Property>} */
+        properties: [],
+
+        /** 
+         * @type {string} 
+         * {@link Product.id} 
+         * */
+        id: '',
+
+        /** Renderira sporocilo o napakah. */
+        errors: [],
+
+        // Labeli za gumbe
+        sendRequestLabel: label.sendRequest[context.language],
+        orderCodeLabel: label.orderCode[context.language],
+        notSelectedErrorLabel: label.notSelectedError[context.language],
+        toLongErrorLabel: label.toLongError[context.language],
+        reloadLabel: label.reload[context.language],
+
+        /** Prikaz narocniske kode. */
+        orderCode: "",
+
+        /** {@link context} */
+        context: context,
+
+        /** Nadzira vidnost pr<table> */
+        active: false,
+
+        /** Pove, ce je uporabnik ze spremenil kaksno znacilnost */
+        changes: false,
+    },
+    methods: {
+
+        /**
+         * Shrani podatke o Produktu
+         * @memberof pr
+         * @method
+         * @param {Product} product
+         * @param {string} dataSource - pove, ali je produkt sveze nalozen, ali pa je nalozen z uporabnikovimi spremembami
+         */
+        setData: function (product, dataSource) {
+            this.properties = product.properties; this.id = product.id; this.changes = product.changed;
+            if (!product.changed) { this.configDefaultSettings(); } // ce je produkt sveze nalozen sprozi nastavitev default stanja
+            this.parseOrderCode();
+        },
+
+        /**
+         * Aktivira/Deaktivira pr<table>
+         * @memberof pr
+         * @method
+         * @param {boolean} bool
+         */
+        activate: function (bool) {
+            this.active = bool;
+        },
+
+        /**
+         * Izbrise svoje podatke, in ce so bile najerejene spremembe, produkt shrani v DataManager
+         * @memberof pr
+         * @method
+         */
+        clearData: function () {
+            if (this.changes) dm.storeProduct({ id: this.id, properties: this.properties, changed: true });
+            this.properties = []; this.id = []; this.orderCode = ""; this.changes = false;
+        },
+
+        /**
+         * Ponovno nalozi produkt brez sprememb,
+         * (ter izbrise podatke o spremembah iz DataManagerja)
+         * @memberof pr
+         * @method
+         */
+        reloadButton: function () {
+            dm.deleteStoredProduct(this.id);
+            this.changes = false;
+            pg.invokeChild(this.id);
+        },
+
+        /**
+         * Nastavi privzeto stanje
+         * @memberof pr
+         * @method
+         */
+        configDefaultSettings: function () {
+            for (let i = 0; i < this.properties.length; i++) {
+                this.setDefault(this.properties[i]);    // za vsak Property nastavi default kot selected
+            }
+            this.enforceConstraints();  // uveljavi omejitve
+        },
+
+        /**
+         * Nastavi zancilnost na privzeto stanje, ob upostevanju omejitev
+         * (ce je privzeto stanje onemogoceno, oziroma, ce ga ni, potem je privzeta prazna opcija)
+         * @memberof pr
+         * @method
+         * @param {Property} property
+         */
+        setDefault: function (property) {
+
+            var defaultSetBool = false;
+            // nastavi privzeto opcijo, ce obstaja in ce ni izkljucena
+            for (let i = 0; i < property.options.length; i++) {
+                if (property.options[i].default === 'TRUE' && !property.options[i].disabled) {
+                    property.value = property.options[i].code;
+                    defaultSetBool = true;
+                }
+            }
+            // ce pri znacilnosti ostane zgolj ena neonemogocena opcija, nastavi le to kot privzeto
+            var notDisabled = [];
+            for (let i = 0; i < property.options.length; i++) {
+                if (!property.options[i].disabled) {
+                    notDisabled.push(property.options[i]);
+                }
+            }
+            if (notDisabled.length === 1) { property.value = notDisabled[0].code; defaultSetBool = true; }
+
+            // ce ni bilo mogoce nastaviti provzete opcije, je privzeta prazna opcija
+            if (!defaultSetBool) { property.value = ""; }
+            // ce je Property customString, potem je privzeta prazna opcija
+            if (this.isCustomStringProperty(property)) { property.value = ""; }
+        },
+
+        /**
+         * ActionListener na uporabnikove izbire pri znacilnostih.
+         * @memberof pr
+         * @method
+         */
+        setSelected: function () {
+            // ce vrednost neke znacilnosti ni nedolocena (""), potem skrije njeno sporocilo o napakah
+            for (let i = 0; i < this.properties.length; i++) {
+                if (this.properties[i].value !== "") { this.properties[i].error.notSelected = false; }
+            }
+
+            this.changes = true;    // oznaci, da so bile na produktu narejene uporabnikove spremembe
+            this.enforceConstraints();  // uveljavi omejitve
+            this.parseOrderCode();
+        },
+
+        /**
+         * Vrne true, ce je Property customString.
+         * @memberof pr
+         * @method
+         * @param {Property} property
+         */
+        isCustomStringProperty: function (property) {
+            if (property.options[0].code.startsWith("string")) { return true }
+            return false;
+        },
+
+        /**
+         * Uveljavi omejitve
+         * @memberof pr
+         * @method
+         */
+        enforceConstraints: function () {
+
+            // sestavi Truths {@link Truth}
+            var truths = [];
+            for (let i = 0; i < this.properties.length; i++) {
+                truths.push({
+                    property: this.properties[i].id,
+                    option: this.properties[i].value,
+                });
+            }
+
+            // uveljavi omejitve na podlagi danih Truths
+            var enforcedBool = false;
+
+            for (let p = 0; p < this.properties.length; p++) {  // za vsako lastnost
+
+                var seledtedWasDisabledBool = false;
+                var prop = this.properties[p];
+                for (let o = 0; o < prop.options.length; o++) {
+                    // uporabljen je logicModule, ki se mu poda omejitev {@link Option.constraints} in truths {@link Truth}
+                    if (prop.options[o].constraints !== '' && lm.getTruth(prop.options[o].constraints, truths)) {
+
+                        // ce logicModule vrne true
+
+                        prop.options[o].disabled = true;    // onemogoci opcijo
+                        
+                        // ce je bila onemogocena opcija prej izbrana, animira spremembo
+                        // in z enforcedBool = true oznaci, da je potrebno ponovno preveriti omejitve
+                        if (prop.value === prop.options[o].code) {  
+                            seledtedWasDisabledBool = true;
+                            this.animateAutoChange(prop);
+                            enforcedBool = true;
+                        }
+                    } else {
+
+                        // ce logic module vrne false, omogoci opcijo
+                        prop.options[o].disabled = false;
+                    }
+                }
+
+                // ce je bila onemogocena prej izbrana opcija, nastavi ta Property na privzeto vrenost
+                if (seledtedWasDisabledBool) {
+                    this.setDefault(prop);
+                }
+
+                // ce je Property customString, poreveri ce je predolg
+                if (this.isCustomStringProperty(prop)) {
+
+                    var limit = (prop.options[0].code).match(/\d+/g).map(Number);   // izracuna limit
+                    if (prop.value.length > limit) {
+                        prop.error.toLong = true;   // ce je predolh animira error sporocilo
+                    } else {
+                        prop.error.toLong = false;  // sicer skrije error sporocilo
+                    }
+                }
+            }
+
+            // ce je bila spremenjena kaksna izbrana opcija, je potrebno ponovno uveljavljanje omejitev
+            if (enforcedBool) this.enforceConstraints();
+        },
+
+        /**
+         * Sestavi Narocnisko kodo
+         * @memberof pr
+         * @method
+         */
+        parseOrderCode: function () {
+
+            var orderString = "";
+            for (let i = 0; i < this.properties.length; i++) {
+                orderString += this.properties[i].value;
+                if (this.properties[i].value === "") { orderString += "xxx"; }
+                if (i !== this.properties.length - 1) { orderString += " - "; }
+            }
+            this.orderCode = orderString;
+
+        },
+
+        /**
+         * Ce se izbira Opcije spremeni zaradi krsenja omejitev, potem Property<tr> pomezikne
+         * @memberof pr
+         * @method
+         */
+        animateAutoChange: function (prop) {
+            if (document.getElementById('row' + prop.id)) {
+                var element = $('#row' + prop.id);
+                element.css("background-color", '#ffcc99');
+
+                element.delay(150).queue(function () {
+                    element.css("background-color", 'white').dequeue();
+                });
+            }
+        },
+
+        /**
+         * Validira izbire in poslje.
+         * (V klokor izbire niso validne, prikaze error sporocila in zahteva popravo)
+         * @memberof pr
+         * @method
+         */
+        sendRequest: function () {
+            var valid = true;
+            for (let i = 0; i < this.properties.length; i++) {
+                if (this.properties[i].value === "") { this.properties[i].error.notSelected = true; }
+                if (this.properties[i].error.notSelected || this.properties[i].error.toLong) { valid = false; }
+            }
+            if (valid) {    // ce je OrderCode veljaven
+                console.log("All well that ends well");
+            }
+        }
+    }
+});
+
+Documentation generated by JSDoc 3.5.5 on Wed Jun 06 2018 10:22:41 GMT+0200 (Srednjeevropski poletni čas ) 

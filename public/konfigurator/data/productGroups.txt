@@ -1,0 +1,333 @@
+[{
+	"description": {
+		"sl": "",
+		"en": "",
+		"de": ""
+	},
+	"name": {
+		"sl": "Merilni pretvorniki MT4xx",
+		"en": "Measuring transducers MT4xx",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_MT416",
+		"name": {
+			"sl": "programabilen pretvornik napetosti",
+			"en": "programmable voltage transducer",
+			"de": ""
+		},
+		"description": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		}
+	}, {
+		"id": "H_MT418",
+		"name": {
+			"sl": "programabilen pretvornik toka",
+			"en": "programmable current transducer",
+			"de": ""
+		},
+		"description": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		}
+	}, {
+		"id": "H_MT440",
+		"name": {
+			"sl": "programabilen multifunkcijski pretvornik ",
+			"en": "programmable multifunctional transducer ",
+			"de": ""
+		},
+		"description": {
+			"sl": "",
+			"en": "",
+			"de": ""
+		}
+	}],
+	"id": "MT4xx"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "Synchronisation meter SQ0214",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC774V1.02",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC7x4V1.00",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC6xxV1.00",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC3x0V1.02",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_(U)MT51xV1.00",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_(U)MT5x0V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_(U)MC7x0V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "SQ"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "RD 500 – Remote Display",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_(U)MC7x0V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "RD"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "Measuring transducers MT 4xx",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "MT4"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "IMC 784 Advanced Power Quality Analyser",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "MC7"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "Iskra MC 774 Quality Analyser – Class A",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "MC6"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "Power monitoring device MC7x4",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "MC3"
+}, {
+	"description": {
+		"sl": "bloh",
+		"en": "bla",
+		"de": "ble"
+	},
+	"name": {
+		"sl": "blen",
+		"en": "Neznani produkt",
+		"de": ""
+	},
+	"products": [{
+		"id": "H_SQ02x4V1.01",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC774V1.02",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}, {
+		"id": "H_MC7x4V1.00",
+		"name": {
+			"sl": "humcl ane",
+			"en": "humcl ane",
+			"de": "humcl ane"
+		},
+		"description": {
+			"sl": "Bla bla",
+			"en": "Bla bla",
+			"de": "Bla bla"
+		}
+	}],
+	"id": "MT5"
+}]
