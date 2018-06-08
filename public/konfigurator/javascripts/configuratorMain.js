@@ -10,7 +10,7 @@ var context = {
     url: "buzzWord",
     // url: document.getElementsByClassName("productItemTittle")[0].innerHTML,
     language: document.documentElement.lang,
-    dataPath: 'konfigurator/'
+    dataPath: '/konfigurator/'
 }
 
 var dm = (function (context) {
@@ -23,7 +23,8 @@ var dm = (function (context) {
             url: url,
             method: 'GET',
             success: function (data) {
-                loadSuccess(JSON.parse(data), target, callback);
+                // loadSuccess(JSON.parse(data), target, callback);
+                callback(JSON.parse(data));
             },
             error: function () {
                 callback();
@@ -52,73 +53,6 @@ var dm = (function (context) {
             if (id === storedProducts[i].id) {
                 storedProducts.splice(i, 1);
             }
-        }
-    }
-    function loadSuccess(data, target, callback) {
-
-        // TO DO !! data = undefined
-        if (target === 'productGroups') {
-
-            data = addProppertiesToProductGroups(data);
-
-            if (context.url !== 'buzzWord') {
-                var unfilteredData = data;
-                loadData(context.dataPath + '/data/internetGroups.txt', 'internetGroups', function (internetGroups) {
-                    var internetGroup = {};
-                    var filteredPgs = [];
-                    for (let i = 0; i < internetGroups.length; i++) {
-                        if (internetGroups[i].id[context.language] === context.url) {
-                            internetGroup = internetGroups[i];
-                        }
-                    }
-
-                    if (internetGroup.productGroups === {}
-                        || internetGroup.productGroups === null
-                        || internetGroup.productGroups === undefined) { callback(); return }
-
-                    for (let i = 0; i < internetGroup.productGroups.length; i++) {
-                        for (let pgs = 0; pgs < unfilteredData.length; pgs++) {
-                            if (unfilteredData[pgs].id === internetGroup.productGroups[i]) {
-                                filteredPgs.push(unfilteredData[pgs]);
-                            }
-                        }
-                    }
-                    callback(filteredPgs);
-                });
-            } else {
-                callback(data);
-            }
-        }
-        if (target === 'internetGroups') {
-            callback(data);
-        }
-        if (target === "product") {
-            callback(addPropertiesToProduct(data));
-        }
-        function addProppertiesToProductGroups(productGroups) {
-            for (let i = 0; i < productGroups.length; i++) {
-                productGroups[i].active = false;
-                for (let ii = 0; ii < productGroups[i].products.length; ii++) {
-                    productGroups[i].products[ii].active = false;
-                    productGroups[i].products[ii].collapsed = false;
-                }
-            }
-            return productGroups;
-        }
-        function addPropertiesToProduct(product) {
-            product.changed = false;
-            for (let i = 0; i < product.properties.length; i++) {
-                product.properties[i].error = {};
-                product.properties[i].error.toLong = false;
-                product.properties[i].error.notSelected = false;
-                product.properties[i].value = '';
-
-                // konec testne implementacije
-                for (let o = 0; o < product.properties[i].options.length; o++) {
-                    product.properties[i].options[o].disabled = false;
-                }
-            }
-            return product;
         }
     }
     return {
@@ -154,17 +88,25 @@ var pgs = new Vue({
     },
     methods: {
         setData: function (loaded) {
-            this.productGroups = loaded;
-            this.active = true;
-
-            if (this.productGroups === undefined || this.productGroups.length === 0) {
+            
+            if (loaded === undefined || loaded.length === 0) {
+                this.active = true;
                 this.errors.push(label.canNotLoad[context.language]);
-            } else
-
-                if (this.productGroups.length === 1) {
+            } else {
+                for (let i = 0; i < loaded.length; i++) {
+                    loaded[i].active = false;
+                    for (let ii = 0; ii < loaded[i].products.length; ii++) {
+                        loaded[i].products[ii].active = false;
+                        loaded[i].products[ii].collapsed = false;
+                    }
+                }
+                this.productGroups = loaded;
+                if (loaded.length === 1) {
                     this.active = false;
                     this.pgButton(this.productGroups[0]);
                 }
+                else { this.active = true; }
+            }
         },
         invokeChild: function (data) {
             pg.activate(false); pg.clearData();
@@ -187,7 +129,37 @@ var pgs = new Vue({
         }
     },
     beforeMount: function () {
-        dm.loadData(context.dataPath + '/data/productGroups.txt', 'productGroups', this.setData);
+        var self = this;
+        dm.loadData(context.dataPath + '/data/productGroups.txt', 'productGroups', function (data) {
+            if(data === undefined){self.setData(); return}
+            if (context.url !== "buzzWord") {
+                dm.loadData(context.dataPath + '/data/internetGroups.txt', 'internetGroups', function (internetGroups) {
+                    var internetGroup = {};
+                    var filteredPgs = [];
+
+                    if(internetGroups === undefined){self.setData(); return;}
+                    for (let i = 0; i < internetGroups.length; i++) {
+                        if (internetGroups[i].id[context.language] === context.url) {
+                            internetGroup = internetGroups[i];
+                        }
+                    }
+                    if (internetGroup.productGroups === {}
+                        || internetGroup.productGroups === null
+                        || internetGroup.productGroups === undefined) { self.setData(); return }
+
+                    for (let i = 0; i < internetGroup.productGroups.length; i++) {
+                        for (let pgs = 0; pgs < data.length; pgs++) {
+                            if (data[pgs].id === internetGroup.productGroups[i]) {
+                                filteredPgs.push(data[pgs]);
+                            }
+                        }
+                    }
+                    self.setData(filteredPgs);
+                });
+            } else {
+                self.setData(data);
+            }
+        });
     }
 });
 
@@ -227,6 +199,17 @@ var pg = new Vue({
                     if (loaded === undefined) {
                         pg.errors.push(label.canNotLoadProduct[context.language]);
                     } else {
+                        loaded.changed = false;
+                        for (let i = 0; i < loaded.properties.length; i++) {
+                            loaded.properties[i].error = {};
+                            loaded.properties[i].error.toLong = false;
+                            loaded.properties[i].error.notSelected = false;
+                            loaded.properties[i].value = '';
+
+                            for (let o = 0; o < loaded.properties[i].options.length; o++) {
+                                loaded.properties[i].options[o].disabled = false;
+                            }
+                        }
                         pr.setData(loaded, "loaded"); pr.activate(true);
                     }
                 });
@@ -251,6 +234,7 @@ var pg = new Vue({
             }
         },
         backButton: function () {
+            this.errors = [];
             pr.activate(false); pr.clearData();
             this.collapsed = false; this.collapse();
         }
@@ -347,7 +331,8 @@ var pr = new Vue({
                 var seledtedWasDisabledBool = false;
                 var prop = this.properties[p];
                 for (let o = 0; o < prop.options.length; o++) {
-                    if (prop.options[o].constraints !== '' && lm.getTruth(prop.options[o].constraints, truths)) {
+                    if (prop.options[o].constraints !== '' && prop.options[o].constraints !== 'REQUIRED'
+                        && lm.getTruth(prop.options[o].constraints, truths)) {
 
                         prop.options[o].disabled = true;
 
@@ -399,7 +384,8 @@ var pr = new Vue({
         sendRequest: function () {
             var valid = true;
             for (let i = 0; i < this.properties.length; i++) {
-                if (this.properties[i].value === "") { this.properties[i].error.notSelected = true; }
+                if (this.properties[i].value === "" && this.properties[i].options[0].constraints !== 'REQUIRED') 
+                { this.properties[i].error.notSelected = true; }
                 if (this.properties[i].error.notSelected || this.properties[i].error.toLong) { valid = false; }
             }
             if (valid) {
