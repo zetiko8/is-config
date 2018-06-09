@@ -10,7 +10,7 @@ var context = {
     url: "buzzWord",
     // url: document.getElementsByClassName("productItemTittle")[0].innerHTML,
     language: document.documentElement.lang,
-    dataPath: '/konfigurator/'
+    dataPath: '/konfigurator'
 }
 
 var dm = (function (context) {
@@ -64,25 +64,13 @@ var dm = (function (context) {
 }(context));
 
 var lm = new logicModule();
-var label = {
-    titlePgs: { en: "Product Groups" },
-    canNotLoad: { en: "Cannot load data" },
-    titlePg: { en: "Products" },
-    backLabel: { en: "Back" },
-    canNotLoadProduct: { en: "Can not load product" },
-    sendRequest: { en: "Send request for configured product" },
-    orderCode: { en: "Order code: " },
-    notSelectedError: { en: "Field is required" },
-    toLongError: { en: "Your input is to long. It can contain max letters:" },
-    reload: { en: "Undo changes" },
-}
-
 var pgs = new Vue({
     el: '#productGroupsDiv',
     data: {
         productGroups: [],
         errors: [],
-        titlePgs: label.titlePgs[context.language],
+        canNotLoad: { en: "Configurator not avialable", sl: "Konfigurator ni na voljo" },
+        titlePgs: '',
         context: context,
         active: false,
     },
@@ -91,7 +79,7 @@ var pgs = new Vue({
             
             if (loaded === undefined || loaded.length === 0) {
                 this.active = true;
-                this.errors.push(label.canNotLoad[context.language]);
+                this.errors.push(this.canNotLoad[context.language]);
             } else {
                 for (let i = 0; i < loaded.length; i++) {
                     loaded[i].active = false;
@@ -126,14 +114,29 @@ var pgs = new Vue({
                 this.productGroups[i].active = false;
             }
             productGroup.active = true;
+        },
+        abort: function(){
+            pg.activate(false); pg.clearData();
+            pr.activate(false); pr.clearData();
+            this.errors.push(this.canNotLoad[context.language]);
         }
     },
     beforeMount: function () {
         var self = this;
-        dm.loadData(context.dataPath + '/data/productGroups.txt', 'productGroups', function (data) {
+        dm.loadData(context.dataPath + '/data/napisi.txt', 'labels', function(data){
+            pg.titlePg = data.titlePg[context.language];
+            pg.backLabel = data.backLabel[context.language];
+            pg.canNotLoadProduct = data.canNotLoadProduct[context.language];
+            pr.sendRequestLabel = data.sendRequest[context.language];
+            pr.orderCodeLabel = data.orderCode[context.language];
+            pr.notSelectedErrorLabel = data.notSelectedError[context.language];
+            pr.toLongErrorLabel = data.toLongError[context.language];
+            pr.reloadLabel = data.reload[context.language];
+        });
+        dm.loadData(context.dataPath + '/data/produktneSkupine.txt', 'productGroups', function (data) {
             if(data === undefined){self.setData(); return}
             if (context.url !== "buzzWord") {
-                dm.loadData(context.dataPath + '/data/internetGroups.txt', 'internetGroups', function (internetGroups) {
+                dm.loadData(context.dataPath + '/data/internetneSkupine.txt', 'internetGroups', function (internetGroups) {
                     var internetGroup = {};
                     var filteredPgs = [];
 
@@ -168,8 +171,9 @@ var pg = new Vue({
     data: {
         products: [],
         errors: [],
-        titlePg: label.titlePg[context.language],
-        backLabel: label.backLabel[context.language],
+        titlePg: '',
+        backLabel: '',
+        canNotLoadProduct: '',
         context: context,
         active: false,
         collapsed: false,
@@ -197,7 +201,7 @@ var pg = new Vue({
             } else {
                 dm.loadData(context.dataPath + '/data/' + id + '.txt', 'product', function (loaded) {
                     if (loaded === undefined) {
-                        pg.errors.push(label.canNotLoadProduct[context.language]);
+                        pg.errors.push(pg.canNotLoadProduct);
                     } else {
                         loaded.changed = false;
                         for (let i = 0; i < loaded.properties.length; i++) {
@@ -210,7 +214,7 @@ var pg = new Vue({
                                 loaded.properties[i].options[o].disabled = false;
                             }
                         }
-                        pr.setData(loaded, "loaded"); pr.activate(true);
+                        pr.activate(true); pr.setData(loaded, "loaded"); 
                     }
                 });
             }
@@ -247,13 +251,13 @@ var pr = new Vue({
         properties: [],
         id: '',
         errors: [],
-        sendRequestLabel: label.sendRequest[context.language],
-        orderCodeLabel: label.orderCode[context.language],
-        notSelectedErrorLabel: label.notSelectedError[context.language],
-        toLongErrorLabel: label.toLongError[context.language],
-        reloadLabel: label.reload[context.language],
+        sendRequestLabel: '',
+        orderCodeLabel: '',
+        notSelectedErrorLabel: '',
+        toLongErrorLabel: '',
+        reloadLabel: '',
         orderCode: "",
-        context: context, // to do lang instead of context
+        context: context,
         active: false,
         changes: false,
     },
@@ -279,7 +283,7 @@ var pr = new Vue({
             for (let i = 0; i < this.properties.length; i++) {
                 this.setDefault(this.properties[i]);
             }
-            this.enforceConstraints();
+            this.enforceConstraints(0);
         },
         setDefault: function (property) {
             var defaultSetBool = false;
@@ -307,15 +311,16 @@ var pr = new Vue({
                 if (this.properties[i].value !== "") { this.properties[i].error.notSelected = false; }
             }
             this.changes = true;
-            this.enforceConstraints();
+            this.enforceConstraints(0);
             this.parseOrderCode();
         },
         isCustomStringProperty: function (property) {
             if (property.options[0].code.startsWith("string")) { return true }
             return false;
         },
-        enforceConstraints: function () {
-
+        enforceConstraints: function (depth) {
+            // depth = 11;
+            if(depth > 10){pgs.abort(); return;}
             var truths = [];
             for (let i = 0; i < this.properties.length; i++) {
                 truths.push({
@@ -331,7 +336,7 @@ var pr = new Vue({
                 var seledtedWasDisabledBool = false;
                 var prop = this.properties[p];
                 for (let o = 0; o < prop.options.length; o++) {
-                    if (prop.options[o].constraints !== '' && prop.options[o].constraints !== 'REQUIRED'
+                    if (prop.options[o].constraints !== '' && prop.options[o].constraints !== 'NOTREQUIRED'
                         && lm.getTruth(prop.options[o].constraints, truths)) {
 
                         prop.options[o].disabled = true;
@@ -358,7 +363,7 @@ var pr = new Vue({
                     }
                 }
             }
-            if (enforcedBool) this.enforceConstraints();
+            if (enforcedBool) this.enforceConstraints(depth + 1);
         },
         parseOrderCode: function () {
 
@@ -372,24 +377,24 @@ var pr = new Vue({
 
         },
         animateAutoChange: function (prop) {
+    
             if (document.getElementById('row' + prop.id)) {
-                var element = $('#row' + prop.id);
-                element.css("background-color", '#ffcc99');
-
-                element.delay(150).queue(function () {
-                    element.css("background-color", 'white').dequeue();
-                });
+                var element = document.getElementById('row' + prop.id);
+                element.style = "background-color: #ffcc99"
+                setTimeout(function(){
+                    element.style = "background-color: white"
+                }, 150)
             }
         },
         sendRequest: function () {
             var valid = true;
             for (let i = 0; i < this.properties.length; i++) {
-                if (this.properties[i].value === "" && this.properties[i].options[0].constraints !== 'REQUIRED') 
+                if (this.properties[i].value === "" && this.properties[i].options[0].constraints !== 'NOTREQUIRED') 
                 { this.properties[i].error.notSelected = true; }
                 if (this.properties[i].error.notSelected || this.properties[i].error.toLong) { valid = false; }
             }
             if (valid) {
-                console.log("All well that ends well");
+                // form submition logic
             }
         }
     }

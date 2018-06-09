@@ -1145,8 +1145,8 @@
 			"de": ""
 		},
 		"notes": {
-			"sl": "",
-			"en": "",
+			"sl": "Zelo dolga navodila za vpis tega vnosa. Zelo dolga navodila za vpis tega vnosa.Zelo dolga navodila za vpis tega vnosa.Zelo dolga navodila za vpis tega vnosa.Zelo dolga navodila za vpis tega vnosa.Zelo dolga navodila za vpis tega vnosa.",
+			"en": "Very long instructions for writing this custom string. Very long instructions for writing this custom string. Very long instructions for writing this custom string. Very long instructions for writing this custom string. ",
 			"de": ""
 		},
 		"options": [{
@@ -1162,7 +1162,7 @@
 				"de": ""
 			},
 			"default": "",
-			"constraints": ""
+			"constraints": "NOTREQUIRED"
 		}]
 	}]
 }
