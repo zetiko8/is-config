@@ -19,6 +19,11 @@ var dm = (function (context) {
     var storedProducts = [];
 
     var loadData = function (url, target, callback) {
+        if(target === "productGroups"){url = context.dataPath + '/data/produktneSkupine.txt'}
+        else if(target === "internetGroups"){url = context.dataPath + '/data/internetneSkupine.txt'}
+        else if(target === "labels"){url = context.dataPath + '/data/napisi.txt'}
+        else {url = context.dataPath + '/data/' + url + '.txt'}
+
         $.ajax({
             url: url,
             method: 'GET',
@@ -123,7 +128,7 @@ var pgs = new Vue({
     },
     beforeMount: function () {
         var self = this;
-        dm.loadData(context.dataPath + '/data/napisi.txt', 'labels', function(data){
+        dm.loadData(null, 'labels', function(data){
             pg.titlePg = data.titlePg[context.language];
             pg.backLabel = data.backLabel[context.language];
             pg.canNotLoadProduct = data.canNotLoadProduct[context.language];
@@ -133,10 +138,10 @@ var pgs = new Vue({
             pr.toLongErrorLabel = data.toLongError[context.language];
             pr.reloadLabel = data.reload[context.language];
         });
-        dm.loadData(context.dataPath + '/data/produktneSkupine.txt', 'productGroups', function (data) {
+        dm.loadData(null, 'productGroups', function (data) {
             if(data === undefined){self.setData(); return}
             if (context.url !== "buzzWord") {
-                dm.loadData(context.dataPath + '/data/internetneSkupine.txt', 'internetGroups', function (internetGroups) {
+                dm.loadData(null, 'internetGroups', function (internetGroups) {
                     var internetGroup = {};
                     var filteredPgs = [];
 
@@ -199,7 +204,7 @@ var pg = new Vue({
             if (storedPr) {
                 pr.setData(storedPr, "stored"); pr.activate(true);
             } else {
-                dm.loadData(context.dataPath + '/data/' + id + '.txt', 'product', function (loaded) {
+                dm.loadData(id, 'product', function (loaded) {
                     if (loaded === undefined) {
                         pg.errors.push(pg.canNotLoadProduct);
                     } else {
