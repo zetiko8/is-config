@@ -81,7 +81,7 @@
                     <tbody>
                         <tr v-for="prop in properties" v-bind:id="'row' + prop.id" class="fckTR1" v-bind:title="prop.notes[context.language]" data-toggle="popover"
                             data-trigger="hover">
-                            <td v-bind:class="{ reddish : prop.error.toLong || prop.error.notSelected }" align="right">
+                            <td v-bind:style="prop.color" align="right">
                                 <b>{{ prop.name[context.language] }}
                                 </b>
                             </td>
@@ -91,7 +91,7 @@
                             </td>
                             <td v-else width="400px">
                                 <select v-model="prop.value" v-on:change="setSelected()" width="390" style="width: 390px" class="form-control">
-                                    <option v-for="op in prop.options" v-bind:value="op.code" v-bind:disabled="op.disabled" v-bind:title="op.notes[context.language]"
+                                    <option v-for="op in prop.options" v-bind:value="op.code" v-bind:disabled="op.disabled" v-bind:title="op.notes[context.language]" v-bind:style="op.color"
                                         data-toggle="popover" data-trigger="hover">
                                         {{ op.code + " : " + op.name[context.language] }}
                                     </option>
@@ -297,6 +297,7 @@
                     }
                 }
                 if (!alreadyStored) { storedProducts.push(product); }
+                if (storedProducts.length > 10) { storedProducts.splice(0, 1); }
             }
             var getStoredProduct = function (id) {
                 for (let i = 0; i < storedProducts.length; i++) {
