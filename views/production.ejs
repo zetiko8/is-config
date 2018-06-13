@@ -103,7 +103,7 @@
                         <td align="right">
                             <b>{{ orderCodeLabel }}</b>
                         </td>
-                        <td v-show="active">
+                        <td v-show="active" width="400px">
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <p>{{ orderCode }}</p>
                         </td>
@@ -579,7 +579,7 @@
                 this.parseOrderCode();
             },
             isCustomStringProperty: function (property) {
-                if (property.options[0].code.startsWith("string")) { return true }
+                if (property.options[0].code.startsWith("string") || property.options[0].code.startsWith("String")) { return true }
                 return false;
             },
             enforceConstraints: function (depth) {
@@ -639,7 +639,7 @@
                 for (let i = 0; i < this.properties.length; i++) {
                     orderString += this.properties[i].value;
                     if (this.properties[i].value === "") { orderString += "xxx"; }
-                    if (i !== this.properties.length - 1) { orderString += " - "; }
+                    if (i !== this.properties.length - 1) { orderString += " "; }
                 }
                 this.orderCode = orderString;
 
