@@ -91,8 +91,8 @@
                             </td>
                             <td v-else width="400px">
                                 <select v-model="prop.value" v-on:change="setSelected()" width="390" style="width: 390px" class="form-control">
-                                    <option v-for="op in prop.options" v-bind:value="op.code" v-bind:disabled="op.disabled" v-bind:title="op.notes[context.language]" v-bind:style="op.color"
-                                        data-toggle="popover" data-trigger="hover">
+                                    <option v-for="op in prop.options" v-bind:value="op.code" v-bind:disabled="op.disabled" v-bind:title="op.notes[context.language]"
+                                        v-bind:style="op.color" data-toggle="popover" data-trigger="hover">
                                         {{ op.code + " : " + op.name[context.language] }}
                                     </option>
                                 </select>
@@ -329,46 +329,48 @@
                 productGroups: [],
                 errors: [],
                 canNotLoad: { en: "Configurator not avialable", sl: "Konfigurator ni na voljo" },
-                titlePgs: '',
+                buzzWord: '',
                 context: context,
                 active: false,
             },
             methods: {
                 setData: function (loaded) {
-
-                    if (loaded === undefined || loaded.length === 0) {
-                        this.active = true;
-                        this.errors.push(this.canNotLoad[context.language]);
-                    } else {
-                        for (let i = 0; i < loaded.length; i++) {
-                            loaded[i].active = false;
-                            for (let ii = 0; ii < loaded[i].products.length; ii++) {
-                                loaded[i].products[ii].active = false;
-                                loaded[i].products[ii].collapsed = false;
+                    try {
+                        if (loaded === undefined || loaded.length === 0) {
+                            this.active = true;
+                            this.errors.push(this.canNotLoad[context.language]);
+                        } else {
+                            for (let i = 0; i < loaded.length; i++) {
+                                loaded[i].active = false;
+                                for (let ii = 0; ii < loaded[i].products.length; ii++) {
+                                    loaded[i].products[ii].active = false;
+                                    loaded[i].products[ii].collapsed = false;
+                                }
                             }
+                            this.productGroups = loaded;
+                            if (loaded.length === 1) {
+                                this.active = false;
+                                this.pgButton(this.productGroups[0]);
+                            }
+                            else { this.active = true; }
                         }
-                        this.productGroups = loaded;
-                        if (loaded.length === 1) {
-                            this.active = false;
-                            this.pgButton(this.productGroups[0]);
-                        }
-                        else { this.active = true; }
-                    }
+                    } catch (error) { this.abort(); }
                 },
                 invokeChild: function (data) {
-                    pg.activate(false); pg.clearData();
-                    pr.activate(false); pr.clearData();
-                    if (data === undefined) { this.errors.push() }
-                    else {
-                        this.animate(data);
-                        pg.setData(data); pg.activate(true);
-                    }
+                    try {
+                        pg.activate(false); pg.clearData();
+                        pr.activate(false); pr.clearData();
+                        if (data === undefined) { this.errors.push() }
+                        else {
+                            this.animate(data);
+                            pg.setData(data); pg.activate(true);
+                        }
+                    } catch (error) { this.abort(); }
                 },
                 pgButton: function (productGroup) {
-                    this.invokeChild(productGroup);
+                    try { this.invokeChild(productGroup); } catch (error) { this.abort(); }
                 },
                 animate: function (productGroup) {
-
                     for (let i = 0; i < this.productGroups.length; i++) {
                         this.productGroups[i].active = false;
                     }
@@ -377,46 +379,51 @@
                 abort: function () {
                     pg.abort = true; pg.clearData();
                     pr.abort = true; pr.clearData();
-                    this.errors.push(this.canNotLoad[context.language]);
+                    try { this.errors.push(this.canNotLoad[context.language]); }
+                    catch (error) { this.errors.push(this.canNotLoad.sl) }
                 }
             },
             beforeMount: function () {
                 var self = this;
                 dm.loadData(null, 'labels', function (data) {
-                    pg.titlePg = data.titlePg[context.language];
-                    pg.backLabel = data.backLabel[context.language];
-                    pg.canNotLoadProduct = data.canNotLoadProduct[context.language];
-                    pr.sendRequestLabel = data.sendRequest[context.language];
-                    pr.orderCodeLabel = data.orderCode[context.language];
-                    pr.notSelectedErrorLabel = data.notSelectedError[context.language];
-                    pr.toLongErrorLabel = data.toLongError[context.language];
-                    pr.reloadLabel = data.reload[context.language];
+                    try {
+                        pg.titlePg = data.titlePg[context.language];
+                        pg.backLabel = data.backLabel[context.language];
+                        pg.canNotLoadProduct = data.canNotLoadProduct[context.language];
+                        pr.sendRequestLabel = data.sendRequest[context.language];
+                        pr.orderCodeLabel = data.orderCode[context.language];
+                        pr.notSelectedErrorLabel = data.notSelectedError[context.language];
+                        pr.toLongErrorLabel = data.toLongError[context.language];
+                        pr.reloadLabel = data.reload[context.language];
+                    } catch (error) { self.abort(); }
                 });
                 dm.loadData(null, 'productGroups', function (data) {
-                    if (data === undefined) { self.setData(); return }
+                    try { if (data === undefined) { self.setData(); return } } catch (error) { self.abort(); }
+
                     if (context.url !== "buzzWord") {
                         dm.loadData(null, 'internetGroups', function (internetGroups) {
-                            var internetGroup = {};
-                            var filteredPgs = [];
-
-                            if (internetGroups === undefined) { self.setData(); return; }
-                            for (let i = 0; i < internetGroups.length; i++) {
-                                if (internetGroups[i].id[context.language] === context.url) {
-                                    internetGroup = internetGroups[i];
-                                }
-                            }
-                            if (internetGroup.productGroups === {}
-                                || internetGroup.productGroups === null
-                                || internetGroup.productGroups === undefined) { self.setData(); return }
-
-                            for (let i = 0; i < internetGroup.productGroups.length; i++) {
-                                for (let pgs = 0; pgs < data.length; pgs++) {
-                                    if (data[pgs].id === internetGroup.productGroups[i]) {
-                                        filteredPgs.push(data[pgs]);
+                            try {
+                                var internetGroup = {};
+                                var filteredPgs = [];
+                                if (internetGroups === undefined) { self.setData(); return; }
+                                for (let i = 0; i < internetGroups.length; i++) {
+                                    if (internetGroups[i].id[context.language] === context.url) {
+                                        internetGroup = internetGroups[i];
                                     }
                                 }
-                            }
-                            self.setData(filteredPgs);
+                                if (internetGroup.productGroups === {}
+                                    || internetGroup.productGroups === null
+                                    || internetGroup.productGroups === undefined) { self.setData(); return }
+
+                                for (let i = 0; i < internetGroup.productGroups.length; i++) {
+                                    for (let pgs = 0; pgs < data.length; pgs++) {
+                                        if (data[pgs].id === internetGroup.productGroups[i]) {
+                                            filteredPgs.push(data[pgs]);
+                                        }
+                                    }
+                                }
+                                self.setData(filteredPgs);
+                            } catch (error) { self.abort(); }
                         });
                     } else {
                         self.setData(data);
@@ -440,7 +447,7 @@
             },
             methods: {
                 setData: function (productGroup) {
-                    this.products = productGroup.products;
+                    try { this.products = productGroup.products; } catch (error) { pgs.abort(); }
                 },
                 activate: function (bool) {
                     this.active = bool; this.collapsed = false;
@@ -452,34 +459,36 @@
                     this.collapsed = false; this.products = {}; this.errors = [];
                 },
                 invokeChild: function (id) {
-                    this.errors = [];
-                    pr.activate(false); pr.clearData();
+                    try {
+                        this.errors = [];
+                        pr.activate(false); pr.clearData();
 
-                    var storedPr = dm.getStoredProduct(id);
-                    if (storedPr) {
-                        pr.setData(storedPr, "stored"); pr.activate(true);
-                    } else {
-                        dm.loadData(id, 'product', function (loaded) {
-                            if (loaded === undefined) {
-                                pg.errors.push(pg.canNotLoadProduct);
-                            } else {
-                                loaded.changed = false;
-                                for (let i = 0; i < loaded.properties.length; i++) {
-                                    loaded.properties[i].error = {};
-                                    loaded.properties[i].error.toLong = false;
-                                    loaded.properties[i].error.notSelected = false;
-                                    loaded.properties[i].value = '';
-                                    loaded.properties[i].color = {};
+                        var storedPr = dm.getStoredProduct(id);
+                        if (storedPr) {
+                            pr.setData(storedPr, "stored"); pr.activate(true);
+                        } else {
+                            dm.loadData(id, 'product', function (loaded) {
+                                if (loaded === undefined) {
+                                    pg.errors.push(pg.canNotLoadProduct);
+                                } else {
+                                    loaded.changed = false;
+                                    for (let i = 0; i < loaded.properties.length; i++) {
+                                        loaded.properties[i].error = {};
+                                        loaded.properties[i].error.toLong = false;
+                                        loaded.properties[i].error.notSelected = false;
+                                        loaded.properties[i].value = '';
+                                        loaded.properties[i].color = {};
 
-                                    for (let o = 0; o < loaded.properties[i].options.length; o++) {
-                                        loaded.properties[i].options[o].disabled = false;
-                                        loaded.properties[i].options[o].color = {};
+                                        for (let o = 0; o < loaded.properties[i].options.length; o++) {
+                                            loaded.properties[i].options[o].disabled = false;
+                                            loaded.properties[i].options[o].color = {};
+                                        }
                                     }
+                                    pr.setData(loaded, "loaded"); pr.activate(true);
                                 }
-                                pr.setData(loaded, "loaded"); pr.activate(true);
-                            }
-                        });
-                    }
+                            });
+                        }
+                    } catch (error) { pgs.abort(); }
                 },
                 pButton: function (product) {
                     this.animate(product);
@@ -500,9 +509,11 @@
                     }
                 },
                 backButton: function () {
-                    this.errors = [];
-                    pr.activate(false); pr.clearData();
-                    this.collapsed = false; this.collapse();
+                    try {
+                        this.errors = [];
+                        pr.activate(false); pr.clearData();
+                        this.collapsed = false; this.collapse();
+                    } catch (error) { pgs.abort(); }
                 }
             },
         });
@@ -526,9 +537,11 @@
             },
             methods: {
                 setData: function (product, dataSource) {
-                    this.properties = product.properties; this.id = product.id; this.changes = product.changed;
-                    if (!product.changed) { this.configDefaultSettings(); }
-                    this.parseOrderCode();
+                    try {
+                        this.properties = product.properties; this.id = product.id; this.changes = product.changed;
+                        if (!product.changed) { this.configDefaultSettings(); }
+                        this.parseOrderCode();
+                    } catch (error) { pgs.abort(); }
                 },
                 activate: function (bool) {
                     this.active = bool;
@@ -549,25 +562,27 @@
                     this.enforceConstraints(0);
                 },
                 setDefault: function (property) {
-                    var defaultSetBool = false;
-                    // sets property to default
-                    for (let i = 0; i < property.options.length; i++) {
-                        if (property.options[i].default === 'TRUE' && !property.options[i].disabled) {
-                            property.value = property.options[i].code;
-                            defaultSetBool = true;
+                    try {
+                        var defaultSetBool = false;
+                        // sets property to default
+                        for (let i = 0; i < property.options.length; i++) {
+                            if (property.options[i].default === 'TRUE' && !property.options[i].disabled) {
+                                property.value = property.options[i].code;
+                                defaultSetBool = true;
+                            }
                         }
-                    }
-                    // if only one option is left un disabled, sets property to that option
-                    var notDisabled = [];
-                    for (let i = 0; i < property.options.length; i++) {
-                        if (!property.options[i].disabled) {
-                            notDisabled.push(property.options[i]);
+                        // if only one option is left un disabled, sets property to that option
+                        var notDisabled = [];
+                        for (let i = 0; i < property.options.length; i++) {
+                            if (!property.options[i].disabled) {
+                                notDisabled.push(property.options[i]);
+                            }
                         }
-                    }
-                    if (notDisabled.length === 1) { property.value = notDisabled[0].code; defaultSetBool = true; }
+                        if (notDisabled.length === 1) { property.value = notDisabled[0].code; defaultSetBool = true; }
 
-                    if (!defaultSetBool) { property.value = ""; }
-                    if (this.isCustomStringProperty(property)) { property.value = ""; }
+                        if (!defaultSetBool) { property.value = ""; }
+                        if (this.isCustomStringProperty(property)) { property.value = ""; }
+                    } catch (error) { pgs.abort(); }
                 },
                 setSelected: function () {
 
@@ -582,61 +597,64 @@
                     this.parseOrderCode();
                 },
                 isCustomStringProperty: function (property) {
-                    if (property.options[0].code.startsWith("string") || property.options[0].code.startsWith("String")) { return true }
-                    return false;
+                    try {
+                        if (property.options[0].code.startsWith("string") || property.options[0].code.startsWith("String")) { return true }
+                        return false;
+                    } catch (error) { pgs.abort(); }
                 },
                 enforceConstraints: function (depth) {
+                    try {
+                        if (depth > 10) { throw Error(); }
+                        var truths = [];
+                        for (let i = 0; i < this.properties.length; i++) {
+                            truths.push({
+                                property: this.properties[i].id,
+                                option: this.properties[i].value,
+                            });
+                        }
 
-                    if (depth > 10) { pgs.abort(); return; }
-                    var truths = [];
-                    for (let i = 0; i < this.properties.length; i++) {
-                        truths.push({
-                            property: this.properties[i].id,
-                            option: this.properties[i].value,
-                        });
-                    }
+                        var enforcedBool = false;
 
-                    var enforcedBool = false;
+                        for (let p = 0; p < this.properties.length; p++) {
 
-                    for (let p = 0; p < this.properties.length; p++) {
+                            var seledtedWasDisabledBool = false;
+                            var prop = this.properties[p];
+                            for (let o = 0; o < prop.options.length; o++) {
+                                if (this.isCustomStringProperty(prop) && prop.options[0].disabled && lm.getTruth(prop.options[o].constraints, truths)) { }
+                                else if (prop.options[o].constraints !== '' && lm.getTruth(prop.options[o].constraints, truths)) {
 
-                        var seledtedWasDisabledBool = false;
-                        var prop = this.properties[p];
-                        for (let o = 0; o < prop.options.length; o++) {
-                            if (this.isCustomStringProperty(prop) && prop.options[0].disabled && lm.getTruth(prop.options[o].constraints, truths)) { }
-                            else if (prop.options[o].constraints !== '' && lm.getTruth(prop.options[o].constraints, truths)) {
+                                    prop.options[o].disabled = true; prop.options[o].color = { color: '#b3b3b3' }
 
-                                prop.options[o].disabled = true; prop.options[o].color = { color: '#b3b3b3' }
-
-                                if (prop.value === prop.options[o].code) {
-                                    seledtedWasDisabledBool = true;
-                                    this.animateAutoChange(prop);
-                                    enforcedBool = true;
+                                    if (prop.value === prop.options[o].code) {
+                                        seledtedWasDisabledBool = true;
+                                        this.animateAutoChange(prop);
+                                        enforcedBool = true;
+                                    }
+                                    if (this.isCustomStringProperty(prop)) {
+                                        prop.value = "";
+                                        prop.error.notSelected = false; prop.color = {}
+                                        this.animateAutoChange(prop);
+                                    }
+                                } else {
+                                    prop.options[o].disabled = false; prop.options[o].color = {}
                                 }
-                                if (this.isCustomStringProperty(prop)) {
-                                    prop.value = "";
-                                    prop.error.notSelected = false; prop.color = {}
-                                    this.animateAutoChange(prop);
+                            }
+                            if (seledtedWasDisabledBool) {
+                                this.setDefault(prop);
+                            }
+                            if (this.isCustomStringProperty(prop)) {
+
+                                var limit = (prop.options[0].code).match(/\d+/g).map(Number);
+                                if (prop.value.length > limit) {
+                                    prop.error.toLong = true; prop.color = { color: '#ffcc99' }
+                                } else {
+                                    prop.error.toLong = false;
+                                    if (!prop.error.notSelected) prop.color = {}
                                 }
-                            } else {
-                                prop.options[o].disabled = false; prop.options[o].color = {}
                             }
                         }
-                        if (seledtedWasDisabledBool) {
-                            this.setDefault(prop);
-                        }
-                        if (this.isCustomStringProperty(prop)) {
-
-                            var limit = (prop.options[0].code).match(/\d+/g).map(Number);
-                            if (prop.value.length > limit) {
-                                prop.error.toLong = true; prop.color = { color: '#ffcc99' }
-                            } else {
-                                prop.error.toLong = false;
-                                if(!prop.error.notSelected) prop.color = {}  
-                            }
-                        }
-                    }
-                    if (enforcedBool) this.enforceConstraints(depth + 1);
+                        if (enforcedBool) this.enforceConstraints(depth + 1);
+                    } catch (error) { pgs.abort(); }
                 },
                 parseOrderCode: function () {
 
@@ -650,14 +668,15 @@
 
                 },
                 animateAutoChange: function (prop) {
-
-                    if (document.getElementById('row' + prop.id)) {
-                        var element = document.getElementById('row' + prop.id);
-                        element.style = "background-color: #ffcc99"
-                        setTimeout(function () {
-                            element.style = "background-color: white"
-                        }, 150)
-                    }
+                    try {
+                        if (document.getElementById('row' + prop.id)) {
+                            var element = document.getElementById('row' + prop.id);
+                            element.style = "background-color: #ffcc99"
+                            setTimeout(function () {
+                                element.style = "background-color: white"
+                            }, 150)
+                        }
+                    } catch (error) {pgs.abort();}
                 },
                 sendRequest: function () {
                     var valid = true;
@@ -675,7 +694,11 @@
                         if (this.properties[i].error.notSelected || this.properties[i].error.toLong) { valid = false; }
                     }
                     if (valid) {
-                        // form submition logic
+                        try {
+                            // form submition logic
+                        } catch (error) {
+                            
+                        }
                     }
                 }
             }
