@@ -631,7 +631,8 @@
                             if (prop.value.length > limit) {
                                 prop.error.toLong = true; prop.color = { color: '#ffcc99' }
                             } else {
-                                prop.error.toLong = false; prop.color = {}
+                                prop.error.toLong = false;
+                                if(!prop.error.notSelected) prop.color = {}  
                             }
                         }
                     }
