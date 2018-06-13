@@ -612,6 +612,7 @@
                             }
                             if (this.isCustomStringProperty(prop)) {
                                 prop.value = "";
+                                prop.error.notSelected = false;
                                 this.animateAutoChange(prop);
                             }
                         } else {
@@ -657,7 +658,8 @@
             sendRequest: function () {
                 var valid = true;
                 for (let i = 0; i < this.properties.length; i++) {
-                    if (this.properties[i].value === "" && !this.properties[i].options[0].code.endsWith('NOTREQUIRED')) {
+                    if (this.properties[i].value === "" && this.properties[i].required !== 'FALSE' && !this.properties[i].options[0].disabled) {
+
                         this.properties[i].error.notSelected = true;
                         if (this.isCustomStringProperty(this.properties[i])) {
                             if (this.properties[i].options[0].disabled) {
