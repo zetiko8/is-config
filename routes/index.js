@@ -5,11 +5,9 @@ var router = express.Router();
 router.get('/ui', function(req, res, next) {
   res.render('config');
 });
-router.get('/ui3', function(req, res, next) {
-  res.render('index3');
+router.get('/', function(req, res, next) {
+  res.render('production');
 });
-router.get('/gm', function(req, res, next) {
-  res.render('gmailApi');
-});
+
 
 module.exports = router;
