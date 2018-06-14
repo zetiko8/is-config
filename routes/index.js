@@ -8,6 +8,9 @@ router.get('/ui', function(req, res, next) {
 router.get('/', function(req, res, next) {
   res.render('production');
 });
+router.get('/prod', function(req, res, next) {
+  res.render('prod');
+});
 
 
 module.exports = router;
