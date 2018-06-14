@@ -622,7 +622,7 @@
                 },
                 clearData: function () {
                     if (this.changes) dm.storeProduct({ id: this.id, properties: this.properties, changed: true });
-                    this.properties = []; this.id = []; this.orderCode = ""; this.changes = false;
+                    this.properties = []; this.id = []; this.orderCode = ""; this.changes = false; this.quantity = 1;
                 },
                 reloadButton: function () {
                     dm.deleteStoredProduct(this.id);
