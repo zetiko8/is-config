@@ -134,12 +134,11 @@
     </div>
 
     <button id="configuratorSendOrder" hidden data-toggle="modal" data-target="#modalmailKontakt"></button><br />
+    <input type="text" hidden id="orderCode">
 
 </div>
 <script src="https://www.iskra.eu/f/konfigurator/libs/jquery-3.3.1.min.js"></script>
 <script src="https://www.iskra.eu/f/konfigurator/libs/vue.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"></script> -->
-
 
 <script>
 
@@ -244,13 +243,9 @@
     }
 
     var context = {
-        // url: 'Measuring transducers MT 4xx',
-        // url: "buzzWord",
         url: document.getElementsByClassName("productItemTittle")[0].innerHTML,
         language: document.documentElement.lang,
-        // language: "en",
-        // dataPath: 'konfigurator/',
-        dataPath: 'https://www.iskra.eu/f/konfigurator/'
+        dataPath: 'https://' + location.hostname + '/f/konfigurator/'
     }
 
     var dm = (function (context) {
@@ -268,7 +263,6 @@
                 url: url,
                 method: 'GET',
                 success: function (data) {
-                    // loadSuccess(JSON.parse(data), target, callback);
                     callback(JSON.parse(data));
                 },
                 error: function () {
@@ -479,7 +473,7 @@
                             }
                         });
                     }
-                } catch (error) { pgs.abort(); console.log(error); }
+                } catch (error) { pgs.abort();}
             },
             pButton: function (product) {
                 this.animate(product);
@@ -534,7 +528,7 @@
                     this.properties = product.properties; this.id = product.id; this.changes = product.changed;
                     if (!product.changed) { this.configDefaultSettings(); }
                     this.parseOrderCode();
-                } catch (error) { pgs.abort(); console.log(error) }
+                } catch (error) { pgs.abort();}
             },
             activate: function (bool) {
                 this.active = bool;
@@ -573,7 +567,7 @@
 
                     if (!defaultSetBool) { property.value = ""; }
                     if (this.isCustomStringProperty(property)) { property.value = ""; }
-                } catch (error) { pgs.abort(); console.log(error) }
+                } catch (error) { pgs.abort();}
             },
             setSelected: function () {
 
@@ -591,7 +585,7 @@
                 try {
                     if (property.options[0].code.startsWith("string") || property.options[0].code.startsWith("String")) { return true }
                     return false;
-                } catch (error) { pgs.abort(); console.log(error) }
+                } catch (error) { pgs.abort();}
             },
             enforceConstraints: function (depth) {
                 try {
@@ -650,7 +644,7 @@
                         }
                     }
                     if (enforcedBool) this.enforceConstraints(depth + 1);
-                } catch (error) { pgs.abort(); console.log(error); }
+                } catch (error) { pgs.abort();}
             },
             parseOrderCode: function () {
 
@@ -672,7 +666,7 @@
                             element.style = "background-color: white"
                         }, 150)
                     }
-                } catch (error) { pgs.abort(); console.log(error) }
+                } catch (error) { pgs.abort();}
             },
             getOptionName: function (prop) {
                 if (prop.value === '') return ' ';
@@ -705,14 +699,11 @@
                             if (this.isCustomStringProperty(this.properties[i])) { orderMessage += this.properties[i].name[context.language] + ": " + this.properties[i].value + " "; }
                             else { orderMessage += this.properties[i].name[context.language] + ": " + this.getOptionName(this.properties[i]) + " "; }
                         }
-                        console.log(orderMessage);
-                        document.getElementById("form-sporocilo").value = orderMessage;
+                        document.getElementById("orderCode").value = orderMessage;
                         document.getElementById("configuratorSendOrder").click();
-                    } catch (error) { pgs.abort(); console.log(error) }
+                    } catch (error) { pgs.abort();}
                 }
             }
         }
     });
-
-
 </script>
