@@ -133,11 +133,7 @@
         </div>
     </div>
 
-</div>
-
-</div>
-
-</div>
+    <button id="configuratorSendOrder" hidden data-toggle="modal" data-target="#modalmailKontakt"></button><br />
 
 </div>
 <script src="https://www.iskra.eu/f/konfigurator/libs/jquery-3.3.1.min.js"></script>
@@ -249,12 +245,12 @@
 
     var context = {
         // url: 'Measuring transducers MT 4xx',
-        url: "buzzWord",
-        // url: document.getElementsByClassName("productItemTittle")[0].innerHTML,
-        // language: document.documentElement.lang,
-        language: "en",
-        dataPath: 'konfigurator/',
-        // dataPath: 'https://www.iskra.eu/f/konfigurator/'
+        // url: "buzzWord",
+        url: document.getElementsByClassName("productItemTittle")[0].innerHTML,
+        language: document.documentElement.lang,
+        // language: "en",
+        // dataPath: 'konfigurator/',
+        dataPath: 'https://www.iskra.eu/f/konfigurator/'
     }
 
     var dm = (function (context) {
@@ -640,8 +636,8 @@
                         if (this.isCustomStringProperty(prop)) {
 
                             var limit = "";
-                            for(let i = 0; i<prop.options[0].code.length; i++){
-                                if(!isNaN(prop.options[0].code.charAt(i))){ limit += prop.options[0].code.charAt(i); }
+                            for (let i = 0; i < prop.options[0].code.length; i++) {
+                                if (!isNaN(prop.options[0].code.charAt(i))) { limit += prop.options[0].code.charAt(i); }
                             }
                             limit = parseInt(limit);
 
@@ -703,13 +699,15 @@
                 if (valid) {
                     try {
                         var orderMessage = "";
-                        orderMessage += this.quantityLabel[context.language] + ": " + this.quantity + "\n";
-                        orderMessage += this.orderCode + "\n";
+                        orderMessage += this.quantityLabel[context.language] + ": " + this.quantity + " ";
+                        orderMessage += this.orderCode + " ";
                         for (let i = 1; i < this.properties.length; i++) {
-                            if (this.isCustomStringProperty(this.properties[i])) { orderMessage += this.properties[i].name[context.language] + ": " + this.properties[i].value + "\n"; }
-                            else { orderMessage += this.properties[i].name[context.language] + ": " + this.getOptionName(this.properties[i]) + "\n"; }
+                            if (this.isCustomStringProperty(this.properties[i])) { orderMessage += this.properties[i].name[context.language] + ": " + this.properties[i].value + " "; }
+                            else { orderMessage += this.properties[i].name[context.language] + ": " + this.getOptionName(this.properties[i]) + " "; }
                         }
                         console.log(orderMessage);
+                        document.getElementById("form-sporocilo").value = orderMessage;
+                        document.getElementById("configuratorSendOrder").click();
                     } catch (error) { pgs.abort(); console.log(error) }
                 }
             }
